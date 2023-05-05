@@ -29,7 +29,7 @@ tests_require = [
 ]
 
 setup(
-    name='customerio_analytics',
+    name='customerio_cdp_analytics',
     version=VERSION,
     url='https://github.com/customerio/cdp-analytics-python',
     author='Customer.io',

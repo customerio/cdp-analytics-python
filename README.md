@@ -5,7 +5,7 @@
 Using pip:
 
 ```bash
-pip3 install customerio-analytics
+pip3 install customerio-cdp-analytics
 ```
 
 or you can install directly from this repo:
@@ -16,7 +16,7 @@ pip3 install git+http://github.com/customerio/cdp-analytics-python
 ## Usage
 
 ```python
-import customerio.analytics as analytics
+from customerio_cdp_analytics import analytics
 
 analytics.write_key = 'YOUR_WRITE_KEY'
 
