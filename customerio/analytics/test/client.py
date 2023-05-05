@@ -3,8 +3,8 @@ import unittest
 import time
 import mock
 
-from analytics.version import VERSION
-from analytics.client import Client
+from customerio.analytics.version import VERSION
+from customerio.analytics.client import Client
 
 
 class TestClient(unittest.TestCase):

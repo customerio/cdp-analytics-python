@@ -7,18 +7,18 @@ from dateutil.tz import tzutc
 from requests.auth import HTTPBasicAuth
 from requests import sessions
 
-from segment.analytics.version import VERSION
-from segment.analytics.utils import remove_trailing_slash
+from customerio.analytics.version import VERSION
+from customerio.analytics.utils import remove_trailing_slash
 
 _session = sessions.Session()
 
 
 def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
     """Post the `kwargs` to the API"""
-    log = logging.getLogger('segment')
+    log = logging.getLogger('customerio')
     body = kwargs
     body["sentAt"] = datetime.utcnow().replace(tzinfo=tzutc()).isoformat()
-    url = remove_trailing_slash(host or 'https://api.segment.io') + '/v1/batch'
+    url = remove_trailing_slash(host or 'https://cdp.customer.io') + '/v1/batch'
     auth = HTTPBasicAuth(write_key, '')
     data = json.dumps(body, cls=DatetimeSerializer)
     log.debug('making request: %s', data)
@@ -68,7 +68,7 @@ class APIError(Exception):
         self.code = code
 
     def __str__(self):
-        msg = "[Segment] {0}: {1} ({2})"
+        msg = "[customer.io] {0}: {1} ({2})"
         return msg.format(self.code, self.message, self.status)
 
 

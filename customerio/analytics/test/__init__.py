@@ -4,7 +4,8 @@ import logging
 import sys
 import analytics
 
-from analytics.client import Client
+from customerio.analytics.client import Client
+from customerio import analytics
 
 
 def all_names():

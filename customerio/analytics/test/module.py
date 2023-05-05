@@ -1,12 +1,9 @@
 import unittest
 
-import analytics
+from customerio.analytics import analytics
 
 
 class TestModule(unittest.TestCase):
-
-    # def failed(self):
-    #     self.failed = True
 
     def setUp(self):
         self.failed = False

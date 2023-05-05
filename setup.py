@@ -5,18 +5,14 @@ try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
-# Don't import analytics-python module here, since deps may not be installed
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'segment','analytics'))
+# Don't import the module here, since deps may not be installed
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'customerio','analytics'))
 from version import VERSION
 
 long_description = '''
-Segment is the simplest way to integrate analytics into your application.
-One API allows you to turn on any other analytics service. No more learning
-new APIs, repeated code, and wasted development time.
+Customer.io Data Pipelines (CDP) is a customer data platform to improve decision-making with real-time updates and deliver personalized experiences.
 
-This is the official python client that wraps the Segment REST API (https://segment.com).
-
-Documentation and more details at https://github.com/segmentio/analytics-python
+This is the official python client that wraps the Customer.io Data Pipelines REST API (https://customer.io/docs/cdp/getting-started/cdp-getting-started/).
 '''
 
 install_requires = [
@@ -33,22 +29,22 @@ tests_require = [
 ]
 
 setup(
-    name='segment-analytics-python',
+    name='customerio_analytics',
     version=VERSION,
-    url='https://github.com/segmentio/analytics-python',
-    author='Segment',
-    author_email='friends@segment.com',
-    maintainer='Segment',
-    maintainer_email='friends@segment.com',
+    url='https://github.com/customerio/cdp-analytics-python',
+    author='Customer.io',
+    author_email='cdp@customer.io',
+    maintainer='Customer.io',
+    maintainer_email='cdp@customer.io',
     test_suite='analytics.test.all',
-    packages=['segment.analytics', 'analytics.test'],
+    packages=['customerio.analytics', 'analytics.test'],
     python_requires='>=3.6.0',
     license='MIT License',
     install_requires=install_requires,
     extras_require={
         'test': tests_require
     },
-    description='The hassle-free way to integrate analytics into any python application.',
+    description='Customer.io Data Pipelines (CDP) is a customer data platform to improve decision-making with real-time updates and deliver personalized experiences.',
     long_description=long_description,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

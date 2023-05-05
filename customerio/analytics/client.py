@@ -7,10 +7,10 @@ import json
 
 from dateutil.tz import tzutc
 
-from segment.analytics.utils import guess_timezone, clean
-from segment.analytics.consumer import Consumer, MAX_MSG_SIZE
-from segment.analytics.request import post, DatetimeSerializer
-from segment.analytics.version import VERSION
+from customerio.analytics.utils import guess_timezone, clean
+from customerio.analytics.consumer import Consumer, MAX_MSG_SIZE
+from customerio.analytics.request import post, DatetimeSerializer
+from customerio.analytics.version import VERSION
 
 import queue
 
@@ -34,8 +34,7 @@ class Client(object):
         upload_interval = 0.5
         upload_size = 100
 
-    """Create a new Segment client."""
-    log = logging.getLogger('segment')
+    log = logging.getLogger('customerio')
 
     def __init__(self,
                  write_key=DefaultConfig.write_key,

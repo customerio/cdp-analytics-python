@@ -1,6 +1,6 @@
 
-from segment.analytics.version import VERSION
-from segment.analytics.client import Client
+from customerio.analytics.version import VERSION
+from customerio.analytics.client import Client
 
 __version__ = VERSION
 
