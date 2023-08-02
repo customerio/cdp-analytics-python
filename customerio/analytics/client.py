@@ -162,7 +162,6 @@ class Client(object):
         traits = traits or {}
         context = context or {}
         integrations = integrations or {}
-        require('user_id or anonymous_id', user_id or anonymous_id, ID_TYPES)
         require('group_id', group_id, ID_TYPES)
         require('traits', traits, dict)
 
