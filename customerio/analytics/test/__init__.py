@@ -2,7 +2,6 @@ import unittest
 import pkgutil
 import logging
 import sys
-import analytics
 
 from customerio.analytics.client import Client
 from customerio import analytics
@@ -10,7 +9,7 @@ from customerio import analytics
 
 def all_names():
     for _, modname, _ in pkgutil.iter_modules(__path__):
-        yield 'analytics.test.' + modname
+        yield 'customerio.analytics.test.' + modname
 
 
 def all():

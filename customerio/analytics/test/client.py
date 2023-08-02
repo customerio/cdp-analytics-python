@@ -72,7 +72,7 @@ class TestClient(unittest.TestCase):
 
         self.assertTrue(success)
 
-        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00+00:00')
+        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00.000+00:00')
         self.assertEqual(msg['properties'], {'property': 'value'})
         self.assertEqual(msg['integrations'], {'Amplitude': True})
         self.assertEqual(msg['context']['ip'], '192.168.0.1')
@@ -108,7 +108,7 @@ class TestClient(unittest.TestCase):
 
         self.assertTrue(success)
 
-        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00+00:00')
+        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00.000+00:00')
         self.assertEqual(msg['integrations'], {'Amplitude': True})
         self.assertEqual(msg['context']['ip'], '192.168.0.1')
         self.assertEqual(msg['traits'], {'trait': 'value'})
@@ -142,7 +142,7 @@ class TestClient(unittest.TestCase):
 
         self.assertTrue(success)
 
-        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00+00:00')
+        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00.000+00:00')
         self.assertEqual(msg['integrations'], {'Amplitude': True})
         self.assertEqual(msg['context']['ip'], '192.168.0.1')
         self.assertEqual(msg['traits'], {'trait': 'value'})
@@ -184,7 +184,7 @@ class TestClient(unittest.TestCase):
 
         self.assertTrue(success)
 
-        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00+00:00')
+        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00.000+00:00')
         self.assertEqual(msg['integrations'], {'Amplitude': True})
         self.assertEqual(msg['context']['ip'], '192.168.0.1')
         self.assertEqual(msg['properties'], {'property': 'value'})
@@ -218,7 +218,7 @@ class TestClient(unittest.TestCase):
 
         self.assertTrue(success)
 
-        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00+00:00')
+        self.assertEqual(msg['timestamp'], '2014-09-03T00:00:00.000+00:00')
         self.assertEqual(msg['integrations'], {'Amplitude': True})
         self.assertEqual(msg['context']['ip'], '192.168.0.1')
         self.assertEqual(msg['properties'], {'property': 'value'})
@@ -325,7 +325,7 @@ class TestClient(unittest.TestCase):
 
         # the post function should be called 2 times, with a batch size of 10
         # each time.
-        with mock.patch('analytics.consumer.post', side_effect=mock_post_fn) \
+        with mock.patch('customerio.analytics.consumer.post', side_effect=mock_post_fn) \
                 as mock_post:
             for _ in range(20):
                 client.identify('userId', {'trait': 'value'})
