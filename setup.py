@@ -37,7 +37,7 @@ setup(
     maintainer='Customer.io',
     maintainer_email='cdp@customer.io',
     test_suite='analytics.test.all',
-    packages=['customerio.analytics', 'analytics.test'],
+    packages=['customerio.analytics'],
     python_requires='>=3.6.0',
     license='MIT License',
     install_requires=install_requires,

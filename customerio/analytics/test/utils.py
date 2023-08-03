@@ -4,7 +4,7 @@ import unittest
 
 from dateutil.tz import tzutc
 
-from analytics import utils
+from customerio.analytics import utils
 
 
 class TestUtils(unittest.TestCase):
