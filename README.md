@@ -35,3 +35,11 @@ analytics.host = 'https://cdp-eu.customer.io'
 
 analytics.track(user_id=4, event='order_complete')
 ```
+
+## Documentation
+
+The links below contain more detailed documentation on how to use this library:
+
+* [Documentation](https://customer.io/docs/cdp/sources/connections/servers/python/)
+* [Specs](https://customer.io/docs/cdp/sources/source-spec/source-events/)
+* [PyPi](https://pypi.org/project/customerio-cdp-analytics/)
