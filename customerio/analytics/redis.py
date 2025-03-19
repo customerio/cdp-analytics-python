@@ -3,7 +3,7 @@ import json
 
 class RedisQueue:
     def __init__(self, redis_url):
-        self.redis = redis.from_StrictRedis.from_url(redis_url)
+        self.redis = redis.from_url(redis_url)
         self.key = 'customerio_analytics_queue'
 
     def qsize(self):
