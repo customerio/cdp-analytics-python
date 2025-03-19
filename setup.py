@@ -19,7 +19,8 @@ install_requires = [
     "requests~=2.7",
     "monotonic~=1.5",
     "backoff~=2.1",
-    "python-dateutil~=2.2"
+    "python-dateutil~=2.2",
+    "redis~=5.2",
 ]
 
 tests_require = [

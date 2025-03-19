@@ -11,12 +11,18 @@ from customerio.analytics.utils import guess_timezone, clean
 from customerio.analytics.consumer import Consumer, MAX_MSG_SIZE
 from customerio.analytics.request import post, DatetimeSerializer
 from customerio.analytics.version import VERSION
+from customerio.analytics.redis import RedisQueue
 
 import queue
 
 ID_TYPES = (numbers.Number, str)
 
-
+class QueueFactory:
+    @staticmethod
+    def create_queue(redis_url=None, max_size=10000):
+        if redis_url:
+            return RedisQueue(redis_url)
+        return queue.Queue(max_size)
 class Client(object):
     class DefaultConfig(object):
         write_key = None
@@ -33,6 +39,7 @@ class Client(object):
         thread = 1
         upload_interval = 0.5
         upload_size = 100
+        redis_url = None
 
     log = logging.getLogger('customerio')
 
@@ -50,10 +57,11 @@ class Client(object):
                  proxies=DefaultConfig.proxies,
                  thread=DefaultConfig.thread,
                  upload_size=DefaultConfig.upload_size,
-                 upload_interval=DefaultConfig.upload_interval,):
+                 upload_interval=DefaultConfig.upload_interval,
+                 redis_url=DefaultConfig.redis_url,):
         require('write_key', write_key, str)
 
-        self.queue = queue.Queue(max_queue_size)
+        self.queue = QueueFactory.create_queue(redis_url,max_queue_size)
         self.write_key = write_key
         self.on_error = on_error
         self.debug = debug
