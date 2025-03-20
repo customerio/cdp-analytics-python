@@ -15,6 +15,7 @@ max_queue_size = Client.DefaultConfig.max_queue_size
 gzip = Client.DefaultConfig.gzip
 timeout = Client.DefaultConfig.timeout
 max_retries = Client.DefaultConfig.max_retries
+redis_url = Client.DefaultConfig.redis_url
 
 default_client = None
 
@@ -73,7 +74,8 @@ def _proxy(method, *args, **kwargs):
                                 max_queue_size=max_queue_size,
                                 send=send, on_error=on_error,
                                 gzip=gzip, max_retries=max_retries,
-                                sync_mode=sync_mode, timeout=timeout)
+                                sync_mode=sync_mode, timeout=timeout,
+                                redis_url=redis_url)
 
     fn = getattr(default_client, method)
     return fn(*args, **kwargs)
