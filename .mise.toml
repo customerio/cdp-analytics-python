@@ -1,0 +1,13 @@
+[env]
+MISE_FETCH_REMOTE_VERSIONS_TIMEOUT = "30s"
+
+_.python.venv = {
+  path = ".venv",
+  create = true,
+}
+
+[tools]
+python = "3.9"
+
+[tasks.test]
+run = 'make install test'
