@@ -11,3 +11,6 @@ python = "3.9"
 
 [tasks.test]
 run = 'make install test'
+
+[tasks.lint]
+run = 'make install lint'
