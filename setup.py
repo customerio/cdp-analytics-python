@@ -24,7 +24,7 @@ install_requires = [
 
 tests_require = [
     "mock==2.0.0",
-    "pylint==3.3.3",
+    "pylint>=3.2.0",
     "flake8==3.7.9",
 ]
 
