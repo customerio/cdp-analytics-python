@@ -16,15 +16,15 @@ This is the official python client that wraps the Customer.io Data Pipelines RES
 '''
 
 install_requires = [
-    "requests~=2.7",
-    "monotonic~=1.5",
-    "backoff~=2.1",
-    "python-dateutil~=2.2"
+    "requests>=2.32.2",
+    "monotonic~=1.6",
+    "backoff~=2.2",
+    "python-dateutil~=2.8"
 ]
 
 tests_require = [
     "mock==2.0.0",
-    "pylint==2.8.0",
+    "pylint==3.3.3",
     "flake8==3.7.9",
 ]
 
@@ -38,6 +38,7 @@ setup(
     maintainer_email='cdp@customer.io',
     test_suite='analytics.test.all',
     packages=['customerio.analytics'],
+    # Newer versions are not tested with Python 3.6 or 3.7.
     python_requires='>=3.6.0',
     license='MIT License',
     install_requires=install_requires,
