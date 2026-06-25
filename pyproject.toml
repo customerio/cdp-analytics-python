@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=77", "setuptools-scm>=8", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "customerio_cdp_analytics"
+dynamic = ["version"]
+# Version is derived from git tags via setuptools-scm (e.g. tag v3.0.0 → version 3.0.0)
+description = "Customer.io Data Pipelines (CDP) Python bindings."
+readme = "README.md"
+requires-python = ">=3.8.0"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Peaberry Software Inc.", email = "support@customerio.com" },
+]
+dependencies = [
+    "requests>=2.32.4",
+    "monotonic~=1.6",
+    "backoff~=2.2",
+    "python-dateutil~=2.8",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.2.2",
+    "twine>=6.1.0",
+    "mock==2.0.0",
+    "pylint>=3.2.0",
+    "flake8==3.7.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/customerio/cdp-analytics-python"
+Releases = "https://github.com/customerio/cdp-analytics-python/releases"
+Issues = "https://github.com/customerio/cdp-analytics-python/issues"
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+
+[tool.setuptools.packages.find]
+include = ["customerio*"]
