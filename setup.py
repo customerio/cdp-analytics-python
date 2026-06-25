@@ -38,8 +38,7 @@ setup(
     maintainer_email='cdp@customer.io',
     test_suite='analytics.test.all',
     packages=['customerio.analytics'],
-    # Newer versions are not tested with Python 3.6 or 3.7.
-    python_requires='>=3.6.0',
+    python_requires='>=3.8.0',
     license='MIT License',
     install_requires=install_requires,
     extras_require={
