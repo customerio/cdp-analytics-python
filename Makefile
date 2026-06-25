@@ -21,8 +21,8 @@ lint-ci:
 clean:
 	rm -rf MANIFEST build dist customerio.egg-info
 
-realclean:
+clean-venv:
 	rm -rf .venv
 	mise deps
 
-.PHONY: install build test lint lint-ci clean realclean
+.PHONY: install build test lint lint-ci clean clean-venv
