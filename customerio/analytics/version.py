@@ -1,1 +1,3 @@
-VERSION = '1.0.0'
+from importlib.metadata import version
+
+VERSION = version("customerio_cdp_analytics")
