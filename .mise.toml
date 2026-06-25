@@ -1,0 +1,20 @@
+[env]
+MISE_FETCH_REMOTE_VERSIONS_TIMEOUT = "30s"
+
+_.python.venv = {
+  path = ".venv",
+  create = true,
+}
+
+[settings]
+python.uv_venv_auto = false
+python.venv_stdlib = true
+
+[tools]
+python = "3.11"
+
+[tasks.test]
+run = 'make install test'
+
+[tasks.lint]
+run = 'make install lint'

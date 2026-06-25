@@ -1,4 +1,4 @@
-﻿Customer.io Data Pipelines analytics client for Python.
+﻿# Customer.io Data Pipelines analytics client for Python.
 
 ## Installation
 
@@ -40,6 +40,6 @@ analytics.track(user_id=4, event='order_complete')
 
 The links below contain more detailed documentation on how to use this library:
 
-* [Documentation](https://customer.io/docs/cdp/sources/connections/servers/python/)
-* [Specs](https://customer.io/docs/cdp/sources/source-spec/source-events/)
+* [Documentation](https://docs.customer.io/integrations/data-in/connections/servers/python/)
+* [Specs](https://docs.customer.io/integrations/data-in/source-spec/incoming-data/)
 * [PyPi](https://pypi.org/project/customerio-cdp-analytics/)

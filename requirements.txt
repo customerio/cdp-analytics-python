@@ -1,0 +1,7 @@
+backoff==2.2.1
+flake8==3.7.9
+monotonic==1.6
+mock==2.0.0
+pylint==3.3.3
+python-dateutil==2.8.2
+requests>=2.32.4
