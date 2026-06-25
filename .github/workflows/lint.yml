@@ -16,4 +16,4 @@ jobs:
           cache-dependency-path: setup.py
 
       - run: pip3 install -e '.[test]'
-      - run: make lint
+      - run: make lint-ci
