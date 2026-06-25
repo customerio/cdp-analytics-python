@@ -1,7 +1,7 @@
 PYTHON ?= python3
 
 install:
-	$(PYTHON) -m pip install .
+	$(PYTHON) -m pip install -e ".[dev]"
 
 build:
 	rm -rf build
