@@ -6,7 +6,7 @@ test:
 
 lint:
 	pylint --rcfile=.pylintrc --reports=y --exit-zero customerio/analytics
-	flake8 --max-complexity=10 --statistics customerio/analytics || true
+	flake8 --max-complexity=10 --statistics --exit-zero customerio/analytics
 
 clean:
 	rm -rf .venv

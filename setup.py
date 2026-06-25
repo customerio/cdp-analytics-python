@@ -16,7 +16,7 @@ This is the official python client that wraps the Customer.io Data Pipelines RES
 '''
 
 install_requires = [
-    "requests>=2.32.2",
+    "requests>=2.32.4",
     "monotonic~=1.6",
     "backoff~=2.2",
     "python-dateutil~=2.8"
