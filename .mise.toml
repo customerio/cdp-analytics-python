@@ -6,6 +6,10 @@ _.python.venv = {
   create = true,
 }
 
+[settings]
+python.uv_venv_auto = false
+python.venv_stdlib = true
+
 [tools]
 python = "3.11"
 
