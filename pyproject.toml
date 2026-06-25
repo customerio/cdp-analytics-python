@@ -8,7 +8,7 @@ dynamic = ["version"]
 # Version is derived from git tags via setuptools-scm (e.g. tag v3.0.0 → version 3.0.0)
 description = "Customer.io Data Pipelines (CDP) Python bindings."
 readme = "README.md"
-requires-python = ">=3.8.0"
+requires-python = ">=3.9.0"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
@@ -27,7 +27,6 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
