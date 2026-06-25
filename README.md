@@ -25,7 +25,7 @@ analytics.track(user_id=4, event='order_complete')
 
 ## Other Regions
 
-If you're using a [different data center](https://customer.io/docs/accounts-and-workspaces/data-centers/) such as our EU region, you can specify an alternate endpoint:
+If you're using a [different data center](https://docs.customer.io/accounts/settings/data-centers/) such as our EU region, you can specify an alternate endpoint:
 
 ```python
 from customerio import analytics
