@@ -1,12 +1,12 @@
-import logging
-from threading import Thread
-import monotonic
-import backoff
 import json
+import logging
+from queue import Empty
+from threading import Thread
+
+import backoff
+import monotonic
 
 from customerio.analytics.request import post, APIError, DatetimeSerializer
-
-from queue import Empty
 
 MAX_MSG_SIZE = 32 << 10
 
@@ -73,7 +73,7 @@ class Consumer(Thread):
             # mark items as acknowledged from queue
             for _ in batch:
                 self.queue.task_done()
-            return success
+        return success
 
     def next(self):
         """Return the next batch of items to upload."""

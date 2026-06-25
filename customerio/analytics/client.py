@@ -1,18 +1,17 @@
-from datetime import datetime
-from uuid import uuid4
-import logging
-import numbers
 import atexit
 import json
+import logging
+import numbers
+import queue
+from datetime import datetime
+from uuid import uuid4
 
 from dateutil.tz import tzutc
 
-from customerio.analytics.utils import guess_timezone, clean
 from customerio.analytics.consumer import Consumer, MAX_MSG_SIZE
 from customerio.analytics.request import post, DatetimeSerializer
+from customerio.analytics.utils import guess_timezone, clean
 from customerio.analytics.version import VERSION
-
-import queue
 
 ID_TYPES = (numbers.Number, str)
 
@@ -269,7 +268,9 @@ class Client(object):
         # Check message size.
         msg_size = len(json.dumps(msg, cls=DatetimeSerializer).encode())
         if msg_size > MAX_MSG_SIZE:
-            raise RuntimeError('Message exceeds %skb limit. (%s)', str(int(MAX_MSG_SIZE / 1024)), str(msg))
+            raise RuntimeError(
+                'Message exceeds %dkb limit. (%s)' % (MAX_MSG_SIZE // 1024, msg)
+            )
 
         # if send is False, return msg as if it was successfully queued
         if not self.send:

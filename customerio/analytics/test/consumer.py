@@ -1,7 +1,8 @@
-import unittest
-import mock
-import time
 import json
+import time
+import unittest
+
+import mock
 
 try:
     from queue import Queue
