@@ -1,7 +1,7 @@
 from datetime import date, datetime
 import unittest
+import unittest.mock as mock
 import time
-import mock
 
 from customerio.analytics.version import VERSION
 from customerio.analytics.client import Client

@@ -1,8 +1,7 @@
 import json
 import time
 import unittest
-
-import mock
+import unittest.mock as mock
 
 try:
     from queue import Queue

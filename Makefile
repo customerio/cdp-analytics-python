@@ -1,5 +1,5 @@
 install:
-	pip install --edit .[test]
+	pip install --edit .
 
 test:
 	python -m unittest customerio/analytics/test/*.py -v

@@ -40,7 +40,6 @@ classifiers = [
 dev = [
     "build>=1.2.2",
     "twine>=6.1.0",
-    "mock==2.0.0",
     "pylint>=3.2.0",
     "flake8==3.7.9",
 ]
