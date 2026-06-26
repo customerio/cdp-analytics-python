@@ -3,7 +3,7 @@ requires = ["setuptools>=77", "setuptools-scm>=8", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "customerio_cdp_analytics"
+name = "customerio-cdp-analytics"
 dynamic = ["version"]
 # Version is derived from git tags via setuptools-scm (e.g. tag v3.0.0 → version 3.0.0)
 description = "Customer.io Data Pipelines (CDP) Python bindings."
