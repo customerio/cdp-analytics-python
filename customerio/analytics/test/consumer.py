@@ -198,12 +198,10 @@ class TestConsumer(unittest.TestCase):
             q.join()
             self.assertEqual(mock_post.call_count, 2)
 
-    @classmethod
-    def test_proxies(cls):
-        consumer = Consumer(None, 'testsecret', proxies='203.243.63.16:80')
-        track = {
-            'type': 'track',
-            'event': 'python event',
-            'userId': 'userId'
+    def test_proxies(self):
+        proxies = {
+            'http': 'http://192.0.2.1:80',
+            'https': 'http://192.0.2.1:80',
         }
-        consumer.request([track])
+        consumer = Consumer(None, 'testsecret', proxies=proxies)
+        self.assertEqual(consumer.proxies, proxies)
