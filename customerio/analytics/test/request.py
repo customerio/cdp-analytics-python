@@ -1,5 +1,6 @@
 from datetime import datetime, date
 import unittest
+import unittest.mock as mock
 import json
 import requests
 
@@ -52,11 +53,34 @@ class TestRequests(unittest.TestCase):
                 'type': 'track'
             }], timeout=0.0001)
 
-    def test_proxies(self):
-        res = post('testsecret', batch=[{
-            'userId': 'userId',
-            'event': 'python event',
-            'type': 'track',
-            'proxies': '203.243.63.16:80'
-        }])
-        self.assertEqual(res.status_code, 200)
+    def test_proxies_passed_to_session(self):
+        proxies = {
+            'https': 'http://proxy.example.com:8080',
+            'http': 'http://proxy.example.com:8080',
+        }
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        with mock.patch('customerio.analytics.request._session.post',
+                        return_value=mock_response) as mock_post:
+            post('testsecret', proxies=proxies, batch=[{
+                'userId': 'userId',
+                'event': 'python event',
+                'type': 'track',
+            }])
+            mock_post.assert_called_once()
+            _, call_kwargs = mock_post.call_args
+            self.assertEqual(call_kwargs['proxies'], proxies)
+
+    def test_no_proxies_by_default(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        with mock.patch('customerio.analytics.request._session.post',
+                        return_value=mock_response) as mock_post:
+            post('testsecret', batch=[{
+                'userId': 'userId',
+                'event': 'python event',
+                'type': 'track',
+            }])
+            mock_post.assert_called_once()
+            _, call_kwargs = mock_post.call_args
+            self.assertNotIn('proxies', call_kwargs)

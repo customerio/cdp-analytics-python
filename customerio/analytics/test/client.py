@@ -343,6 +343,16 @@ class TestClient(unittest.TestCase):
             self.assertEqual(consumer.timeout, 15)
 
     def test_proxies(self):
-        client = Client('testsecret', proxies='203.243.63.16:80')
-        success, msg = client.identify('userId', {'trait': 'value'})
-        self.assertTrue(success)
+        proxies = {
+            'https': 'http://proxy.example.com:8080',
+            'http': 'http://proxy.example.com:8080',
+        }
+        client = Client('testsecret', sync_mode=True, proxies=proxies)
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        with mock.patch('customerio.analytics.request._session.post',
+                        return_value=mock_response) as mock_post:
+            client.identify('userId', {'trait': 'value'})
+            mock_post.assert_called_once()
+            _, call_kwargs = mock_post.call_args
+            self.assertEqual(call_kwargs['proxies'], proxies)
