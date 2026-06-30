@@ -318,19 +318,31 @@ class TestClient(unittest.TestCase):
 
     def test_user_defined_upload_size(self):
         client = Client('testsecret', on_error=self.fail,
-                        upload_size=10, upload_interval=3)
+                        upload_size=10, upload_interval=0.3)
 
         def mock_post_fn(*args, **kwargs):
             self.assertEqual(len(kwargs['batch']), 10)
 
         # the post function should be called 2 times, with a batch size of 10
-        # each time.
+        # each time. 0.3s upload_interval ensures both batches are sent
+        # during 1 second sleep.
         with mock.patch('customerio.analytics.consumer.post', side_effect=mock_post_fn) \
                 as mock_post:
             for _ in range(20):
                 client.identify('userId', {'trait': 'value'})
             time.sleep(1)
             self.assertEqual(mock_post.call_count, 2)
+
+    def test_user_defined_upload_interval(self):
+        upload_interval = 0.3
+        client = Client('testsecret', on_error=self.fail,
+                        upload_size=100, upload_interval=upload_interval)
+
+        with mock.patch('customerio.analytics.consumer.post') as mock_post:
+            for _ in range(3):
+                client.identify('userId', {'trait': 'value'})
+                time.sleep(upload_interval * 1.1)
+            self.assertEqual(mock_post.call_count, 3)
 
     def test_user_defined_timeout(self):
         client = Client('testsecret', timeout=10)
@@ -343,6 +355,16 @@ class TestClient(unittest.TestCase):
             self.assertEqual(consumer.timeout, 15)
 
     def test_proxies(self):
-        client = Client('testsecret', proxies='203.243.63.16:80')
-        success, msg = client.identify('userId', {'trait': 'value'})
-        self.assertTrue(success)
+        proxies = {
+            'https': 'http://proxy.example.com:8080',
+            'http': 'http://proxy.example.com:8080',
+        }
+        client = Client('testsecret', sync_mode=True, proxies=proxies)
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        with mock.patch('customerio.analytics.request._session.post',
+                        return_value=mock_response) as mock_post:
+            client.identify('userId', {'trait': 'value'})
+            mock_post.assert_called_once()
+            _, call_kwargs = mock_post.call_args
+            self.assertEqual(call_kwargs['proxies'], proxies)
