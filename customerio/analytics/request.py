@@ -42,7 +42,7 @@ def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
         "timeout": timeout,
     }
 
-    if proxies:
+    if proxies is not None:
         kwargs['proxies'] = proxies
 
     res = _session.post(url, **kwargs)

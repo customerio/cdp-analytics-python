@@ -324,7 +324,8 @@ class TestClient(unittest.TestCase):
             self.assertEqual(len(kwargs['batch']), 10)
 
         # the post function should be called 2 times, with a batch size of 10
-        # each time.
+        # each time. 0.3s upload_interval ensures both batches are sent
+        # during 1 second sleep.
         with mock.patch('customerio.analytics.consumer.post', side_effect=mock_post_fn) \
                 as mock_post:
             for _ in range(20):
