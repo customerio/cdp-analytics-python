@@ -3,6 +3,7 @@ from io import BytesIO
 from gzip import GzipFile
 import logging
 import json
+import re
 from dateutil.tz import tzutc
 from requests.auth import HTTPBasicAuth
 from requests import sessions
@@ -12,20 +13,28 @@ from customerio.analytics.utils import remove_trailing_slash
 
 _session = sessions.Session()
 
+_API_KEY_PREFIX = re.compile(r'^(ak|wk)_(us|eu)_')
+
 
 def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
     """Post the `kwargs` to the API"""
     log = logging.getLogger('customerio')
     body = kwargs
     body["sentAt"] = datetime.utcnow().replace(tzinfo=tzutc()).isoformat()
-    url = remove_trailing_slash(host or 'https://cdp.customer.io') + '/v1/batch'
-    auth = HTTPBasicAuth(write_key, '')
+    api_key = _API_KEY_PREFIX.match(write_key)
+    default_host = 'https://cdp.customer.io'
+    if api_key and api_key.group(2) == 'eu':
+        default_host = 'https://cdp-eu.customer.io'
+    url = remove_trailing_slash(host or default_host) + '/v1/batch'
+    auth = None if api_key else HTTPBasicAuth(write_key, '')
     data = json.dumps(body, cls=DatetimeSerializer)
     log.debug('making request: %s', data)
     headers = {
         'Content-Type': 'application/json',
         'User-Agent': 'analytics-python/' + VERSION
     }
+    if api_key:
+        headers['Authorization'] = 'Bearer ' + write_key
     if gzip:
         headers['Content-Encoding'] = 'gzip'
         buf = BytesIO()
