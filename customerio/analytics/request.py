@@ -13,7 +13,7 @@ from customerio.analytics.utils import remove_trailing_slash
 
 _session = sessions.Session()
 
-_API_KEY_PREFIX = re.compile(r'^(ak|wk)_(us|eu)_')
+_API_KEY_PREFIX = re.compile(r'^[a-z]{2}_(us|eu)_')
 
 
 def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
@@ -23,7 +23,7 @@ def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
     body["sentAt"] = datetime.utcnow().replace(tzinfo=tzutc()).isoformat()
     api_key = _API_KEY_PREFIX.match(write_key)
     default_host = 'https://cdp.customer.io'
-    if api_key and api_key.group(2) == 'eu':
+    if api_key and api_key.group(1) == 'eu':
         default_host = 'https://cdp-eu.customer.io'
     url = remove_trailing_slash(host or default_host) + '/v1/batch'
     auth = None if api_key else HTTPBasicAuth(write_key, '')

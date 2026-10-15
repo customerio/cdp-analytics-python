@@ -99,14 +99,14 @@ class TestRequests(unittest.TestCase):
             return mock_post.call_args
 
     def test_secret_api_key_uses_bearer(self):
-        key = 'ak_us_' + 'a' * 32 + '_abcdef'
+        key = 'sk_us_' + 'a' * 32 + '_abcdef'
         _, call_kwargs = self._post_and_get_call(key)
         self.assertEqual(call_kwargs['headers']['Authorization'],
                          'Bearer ' + key)
         self.assertIsNone(call_kwargs['auth'])
 
     def test_public_api_key_uses_bearer(self):
-        key = 'wk_us_' + 'a' * 32 + '_abcdef'
+        key = 'pk_us_' + 'a' * 32 + '_abcdef'
         _, call_kwargs = self._post_and_get_call(key)
         self.assertEqual(call_kwargs['headers']['Authorization'],
                          'Bearer ' + key)
@@ -120,17 +120,17 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(call_kwargs['auth'].password, '')
 
     def test_eu_api_key_uses_eu_host(self):
-        key = 'ak_eu_' + 'a' * 32 + '_abcdef'
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
         call_args, _ = self._post_and_get_call(key)
         self.assertEqual(call_args[0], 'https://cdp-eu.customer.io/v1/batch')
 
     def test_us_api_key_uses_us_host(self):
-        key = 'ak_us_' + 'a' * 32 + '_abcdef'
+        key = 'sk_us_' + 'a' * 32 + '_abcdef'
         call_args, _ = self._post_and_get_call(key)
         self.assertEqual(call_args[0], 'https://cdp.customer.io/v1/batch')
 
     def test_explicit_host_wins_over_api_key(self):
-        key = 'ak_eu_' + 'a' * 32 + '_abcdef'
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
         call_args, _ = self._post_and_get_call(
             key, host='https://example.com')
         self.assertEqual(call_args[0], 'https://example.com/v1/batch')
