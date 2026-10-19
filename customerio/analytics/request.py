@@ -5,7 +5,7 @@ import logging
 import json
 import re
 from dateutil.tz import tzutc
-from requests.auth import HTTPBasicAuth
+from requests.auth import AuthBase, HTTPBasicAuth
 from requests import sessions
 
 from customerio.analytics.version import VERSION
@@ -14,6 +14,18 @@ from customerio.analytics.utils import remove_trailing_slash
 _session = sessions.Session()
 
 _API_KEY_PREFIX = re.compile(r'^[a-z]{2}_(us|eu)_')
+
+
+class _BearerAuth(AuthBase):
+    """Sends the key as a Bearer token. Passed as `auth` so Requests never
+    swaps in Basic auth from a matching .netrc entry."""
+
+    def __init__(self, key):
+        self.key = key
+
+    def __call__(self, request):
+        request.headers['Authorization'] = 'Bearer ' + self.key
+        return request
 
 
 def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
@@ -26,15 +38,13 @@ def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
     if api_key and api_key.group(1) == 'eu':
         default_host = 'https://cdp-eu.customer.io'
     url = remove_trailing_slash(host or default_host) + '/v1/batch'
-    auth = None if api_key else HTTPBasicAuth(write_key, '')
+    auth = _BearerAuth(write_key) if api_key else HTTPBasicAuth(write_key, '')
     data = json.dumps(body, cls=DatetimeSerializer)
     log.debug('making request: %s', data)
     headers = {
         'Content-Type': 'application/json',
         'User-Agent': 'analytics-python/' + VERSION
     }
-    if api_key:
-        headers['Authorization'] = 'Bearer ' + write_key
     if gzip:
         headers['Content-Encoding'] = 'gzip'
         buf = BytesIO()

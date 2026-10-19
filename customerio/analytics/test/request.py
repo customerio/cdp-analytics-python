@@ -2,9 +2,11 @@ from datetime import datetime, date
 import unittest
 import unittest.mock as mock
 import json
+import os
+import tempfile
 import requests
 
-from customerio.analytics.request import post, DatetimeSerializer
+from customerio.analytics.request import post, DatetimeSerializer, _BearerAuth
 
 
 class TestRequests(unittest.TestCase):
@@ -101,16 +103,29 @@ class TestRequests(unittest.TestCase):
     def test_secret_api_key_uses_bearer(self):
         key = 'sk_us_' + 'a' * 32 + '_abcdef'
         _, call_kwargs = self._post_and_get_call(key)
-        self.assertEqual(call_kwargs['headers']['Authorization'],
-                         'Bearer ' + key)
-        self.assertIsNone(call_kwargs['auth'])
+        self.assertIsInstance(call_kwargs['auth'], _BearerAuth)
+        self.assertEqual(call_kwargs['auth'].key, key)
 
     def test_public_api_key_uses_bearer(self):
         key = 'pk_us_' + 'a' * 32 + '_abcdef'
         _, call_kwargs = self._post_and_get_call(key)
-        self.assertEqual(call_kwargs['headers']['Authorization'],
-                         'Bearer ' + key)
-        self.assertIsNone(call_kwargs['auth'])
+        self.assertIsInstance(call_kwargs['auth'], _BearerAuth)
+        self.assertEqual(call_kwargs['auth'].key, key)
+
+    def test_netrc_entry_does_not_override_bearer(self):
+        key = 'sk_us_' + 'a' * 32 + '_abcdef'
+        with tempfile.TemporaryDirectory() as tmp:
+            netrc = os.path.join(tmp, 'netrc')
+            with open(netrc, 'w') as f:
+                f.write('machine cdp.customer.io login user password pass\n')
+            mock_response = mock.Mock()
+            mock_response.status_code = 200
+            with mock.patch.dict(os.environ, {'NETRC': netrc}), \
+                    mock.patch('requests.sessions.Session.send',
+                               return_value=mock_response) as mock_send:
+                post(key, batch=[{'userId': 'userId', 'type': 'track'}])
+            prepared = mock_send.call_args[0][0]
+        self.assertEqual(prepared.headers['Authorization'], 'Bearer ' + key)
 
     def test_legacy_write_key_uses_basic(self):
         call_args, call_kwargs = self._post_and_get_call('testsecret')
