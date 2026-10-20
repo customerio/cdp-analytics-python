@@ -14,6 +14,10 @@ from customerio.analytics.utils import remove_trailing_slash
 _session = sessions.Session()
 
 _API_KEY_PREFIX = re.compile(r'^[a-z]{2}_(us|eu)_')
+_REGION_HOSTS = {
+    'us': 'https://cdp.customer.io',
+    'eu': 'https://cdp-eu.customer.io',
+}
 
 
 class _BearerAuth(AuthBase):
@@ -33,11 +37,18 @@ def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
     log = logging.getLogger('customerio')
     body = kwargs
     body["sentAt"] = datetime.utcnow().replace(tzinfo=tzutc()).isoformat()
+    # Keys read from mounted secret files often end in a newline, which
+    # http.client rejects with an error that includes the whole key.
+    write_key = write_key.strip()
     api_key = _API_KEY_PREFIX.match(write_key)
-    default_host = 'https://cdp.customer.io'
-    if api_key and api_key.group(1) == 'eu':
-        default_host = 'https://cdp-eu.customer.io'
-    url = remove_trailing_slash(host or default_host) + '/v1/batch'
+    region = api_key.group(1) if api_key else 'us'
+    base_url = remove_trailing_slash(host or _REGION_HOSTS[region])
+    if api_key:
+        for other_region, other_host in _REGION_HOSTS.items():
+            if other_region != region and base_url == other_host:
+                log.warning('%s API key is being sent to the %s host %s',
+                            region.upper(), other_region.upper(), base_url)
+    url = base_url + '/v1/batch'
     auth = _BearerAuth(write_key) if api_key else HTTPBasicAuth(write_key, '')
     data = json.dumps(body, cls=DatetimeSerializer)
     log.debug('making request: %s', data)

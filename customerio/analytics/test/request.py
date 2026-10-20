@@ -2,6 +2,7 @@ from datetime import datetime, date
 import unittest
 import unittest.mock as mock
 import json
+import logging
 import os
 import tempfile
 import requests
@@ -149,3 +150,32 @@ class TestRequests(unittest.TestCase):
         call_args, _ = self._post_and_get_call(
             key, host='https://example.com')
         self.assertEqual(call_args[0], 'https://example.com/v1/batch')
+
+    def test_api_key_with_trailing_newline_is_stripped(self):
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        with mock.patch('requests.sessions.Session.send',
+                        return_value=mock_response) as mock_send:
+            post(key + '\n', batch=[{'userId': 'userId', 'type': 'track'}])
+        prepared = mock_send.call_args[0][0]
+        self.assertEqual(prepared.url, 'https://cdp-eu.customer.io/v1/batch')
+        self.assertEqual(prepared.headers['Authorization'], 'Bearer ' + key)
+
+    def test_api_key_sent_to_other_region_host_warns(self):
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
+        with self.assertLogs('customerio', level='WARNING') as logs:
+            call_args, _ = self._post_and_get_call(
+                key, host='https://cdp.customer.io/')
+        self.assertEqual(call_args[0], 'https://cdp.customer.io/v1/batch')
+        self.assertEqual(logs.output, [
+            'WARNING:customerio:EU API key is being sent to the US host '
+            'https://cdp.customer.io',
+        ])
+
+    def test_api_key_sent_to_own_region_host_does_not_warn(self):
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
+        log = logging.getLogger('customerio')
+        with mock.patch.object(log, 'warning') as mock_warning:
+            self._post_and_get_call(key, host='https://cdp-eu.customer.io')
+        mock_warning.assert_not_called()
