@@ -3,8 +3,9 @@ from io import BytesIO
 from gzip import GzipFile
 import logging
 import json
+import re
 from dateutil.tz import tzutc
-from requests.auth import HTTPBasicAuth
+from requests.auth import AuthBase, HTTPBasicAuth
 from requests import sessions
 
 from customerio.analytics.version import VERSION
@@ -12,14 +13,56 @@ from customerio.analytics.utils import remove_trailing_slash
 
 _session = sessions.Session()
 
+_API_KEY_PREFIX = re.compile(r'^(pk|sk)_(us|eu)_')
+_REGION_HOSTS = {
+    'us': 'https://cdp.customer.io',
+    'eu': 'https://cdp-eu.customer.io',
+}
+
+
+class _BearerAuth(AuthBase):
+    """Sends the key as a Bearer token. Passed as `auth` so Requests never
+    swaps in Basic auth from a matching .netrc entry."""
+
+    def __init__(self, key):
+        self.key = key
+
+    def __call__(self, request):
+        request.headers['Authorization'] = 'Bearer ' + self.key
+        return request
+
+
+def _base_url(api_key, host):
+    region = api_key.group(2) if api_key else 'us'
+    return remove_trailing_slash(host or _REGION_HOSTS[region])
+
+
+def warn_if_other_region_host(write_key, host):
+    """Logs a warning when a region API key is set to go to the other
+    region's default host. Called once per client, not per request."""
+    api_key = _API_KEY_PREFIX.match(write_key.strip())
+    if not api_key:
+        return
+    region = api_key.group(2)
+    base_url = _base_url(api_key, host)
+    for other_region, other_host in _REGION_HOSTS.items():
+        if other_region != region and base_url == other_host:
+            logging.getLogger('customerio').warning(
+                '%s API key is being sent to the %s host %s',
+                region.upper(), other_region.upper(), base_url)
+
 
 def post(write_key, host=None, gzip=False, timeout=15, proxies=None, **kwargs):
     """Post the `kwargs` to the API"""
     log = logging.getLogger('customerio')
     body = kwargs
     body["sentAt"] = datetime.utcnow().replace(tzinfo=tzutc()).isoformat()
-    url = remove_trailing_slash(host or 'https://cdp.customer.io') + '/v1/batch'
-    auth = HTTPBasicAuth(write_key, '')
+    # Keys read from mounted secret files often end in a newline, which
+    # http.client rejects with an error that includes the whole key.
+    write_key = write_key.strip()
+    api_key = _API_KEY_PREFIX.match(write_key)
+    url = _base_url(api_key, host) + '/v1/batch'
+    auth = _BearerAuth(write_key) if api_key else HTTPBasicAuth(write_key, '')
     data = json.dumps(body, cls=DatetimeSerializer)
     log.debug('making request: %s', data)
     headers = {

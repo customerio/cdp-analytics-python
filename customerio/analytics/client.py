@@ -9,7 +9,8 @@ from uuid import uuid4
 from dateutil.tz import tzutc
 
 from customerio.analytics.consumer import Consumer, MAX_MSG_SIZE
-from customerio.analytics.request import post, DatetimeSerializer
+from customerio.analytics.request import (
+    post, DatetimeSerializer, warn_if_other_region_host)
 from customerio.analytics.utils import guess_timezone, clean
 from customerio.analytics.version import VERSION
 
@@ -65,6 +66,8 @@ class Client(object):
 
         if debug:
             self.log.setLevel(logging.DEBUG)
+
+        warn_if_other_region_host(write_key, host)
 
         if sync_mode:
             self.consumers = None
