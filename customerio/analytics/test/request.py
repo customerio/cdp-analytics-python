@@ -2,7 +2,6 @@ from datetime import datetime, date
 import unittest
 import unittest.mock as mock
 import json
-import logging
 import os
 import tempfile
 import requests
@@ -162,20 +161,10 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(prepared.url, 'https://cdp-eu.customer.io/v1/batch')
         self.assertEqual(prepared.headers['Authorization'], 'Bearer ' + key)
 
-    def test_api_key_sent_to_other_region_host_warns(self):
-        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
-        with self.assertLogs('customerio', level='WARNING') as logs:
-            call_args, _ = self._post_and_get_call(
-                key, host='https://cdp.customer.io/')
+    def test_unknown_prefix_uses_basic_and_us_host(self):
+        key = 'xx_us_' + 'a' * 32 + '_abcdef'
+        call_args, call_kwargs = self._post_and_get_call(key)
         self.assertEqual(call_args[0], 'https://cdp.customer.io/v1/batch')
-        self.assertEqual(logs.output, [
-            'WARNING:customerio:EU API key is being sent to the US host '
-            'https://cdp.customer.io',
-        ])
-
-    def test_api_key_sent_to_own_region_host_does_not_warn(self):
-        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
-        log = logging.getLogger('customerio')
-        with mock.patch.object(log, 'warning') as mock_warning:
-            self._post_and_get_call(key, host='https://cdp-eu.customer.io')
-        mock_warning.assert_not_called()
+        self.assertNotIsInstance(call_kwargs['auth'], _BearerAuth)
+        self.assertEqual(call_kwargs['auth'].username, key)
+        self.assertEqual(call_kwargs['auth'].password, '')

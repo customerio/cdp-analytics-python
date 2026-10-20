@@ -1,6 +1,7 @@
 from datetime import date, datetime
 import unittest
 import unittest.mock as mock
+import logging
 import time
 
 from customerio.analytics.version import VERSION
@@ -368,3 +369,44 @@ class TestClient(unittest.TestCase):
             mock_post.assert_called_once()
             _, call_kwargs = mock_post.call_args
             self.assertEqual(call_kwargs['proxies'], proxies)
+
+    def _track_with_mocked_post(self, client, times=1):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        with mock.patch('customerio.analytics.request._session.post',
+                        return_value=mock_response) as mock_post:
+            for _ in range(times):
+                client.track('userId', 'python event')
+            return mock_post.call_args
+
+    def test_api_key_sent_to_other_region_host_warns(self):
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
+        with self.assertLogs('customerio', level='WARNING') as logs:
+            client = Client(key, host='https://cdp.customer.io/',
+                            sync_mode=True)
+            call_args = self._track_with_mocked_post(client)
+        self.assertEqual(call_args[0][0], 'https://cdp.customer.io/v1/batch')
+        self.assertEqual(logs.output, [
+            'WARNING:customerio:EU API key is being sent to the US host '
+            'https://cdp.customer.io',
+        ])
+
+    def test_other_region_host_warns_once_per_client(self):
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
+        with self.assertLogs('customerio', level='WARNING') as logs:
+            client = Client(key, host='https://cdp.customer.io',
+                            sync_mode=True)
+            self._track_with_mocked_post(client, times=3)
+        self.assertEqual(logs.output, [
+            'WARNING:customerio:EU API key is being sent to the US host '
+            'https://cdp.customer.io',
+        ])
+
+    def test_api_key_sent_to_own_region_host_does_not_warn(self):
+        key = 'sk_eu_' + 'a' * 32 + '_abcdef'
+        log = logging.getLogger('customerio')
+        with mock.patch.object(log, 'warning') as mock_warning:
+            client = Client(key, host='https://cdp-eu.customer.io',
+                            sync_mode=True)
+            self._track_with_mocked_post(client)
+        mock_warning.assert_not_called()
