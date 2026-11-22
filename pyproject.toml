@@ -53,4 +53,6 @@ version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 
 [tool.setuptools.packages.find]
-include = ["customerio*"]
+# customerio/__init__.py belongs to the customerio package, which installs into the same folder.
+include = ["customerio.analytics*"]
+namespaces = true
