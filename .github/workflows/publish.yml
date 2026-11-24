@@ -48,6 +48,8 @@ jobs:
           payload: |
             {
               "text": "CDP Analytics Python SDK ${{ github.event.release.tag_name }} published to PyPI",
+              "username": "CDP Analytics Python deployment bot",
+              "icon_url": "https://raw.githubusercontent.com/github/explore/main/topics/python/python.png",
               "channel": "#server-sdk-deployments",
               "blocks": [
                 {
@@ -69,6 +71,8 @@ jobs:
           payload: |
             {
               "text": "CDP Analytics Python SDK release failure",
+              "username": "CDP Analytics Python deployment bot",
+              "icon_url": "https://raw.githubusercontent.com/github/explore/main/topics/python/python.png",
               "channel": "#server-sdk-deployments",
               "blocks": [
                 {
