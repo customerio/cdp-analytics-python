@@ -16,7 +16,6 @@ authors = [
 ]
 dependencies = [
     "requests>=2.32.4",
-    "monotonic~=1.6",
     "backoff~=2.2",
     "python-dateutil~=2.8",
 ]
