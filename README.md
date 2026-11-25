@@ -43,3 +43,7 @@ The links below contain more detailed documentation on how to use this library:
 * [Documentation](https://docs.customer.io/integrations/data-in/connections/servers/python/)
 * [Specs](https://docs.customer.io/integrations/data-in/source-spec/incoming-data/)
 * [PyPi](https://pypi.org/project/customerio-cdp-analytics/)
+
+## Support
+
+For help or to report a bug, [contact Customer.io Support](https://fly.customer.io/?support=true). We don't track issues in this repository.
