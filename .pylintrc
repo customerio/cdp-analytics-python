@@ -8,6 +8,9 @@ ignore=CVS
 # regex matches against base names, not paths.
 ignore-patterns=
 
+# customerio is a namespace package with no __init__.py.
+source-roots=.
+
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
 #init-hook=
